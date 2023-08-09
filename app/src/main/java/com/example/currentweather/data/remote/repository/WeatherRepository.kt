@@ -4,8 +4,8 @@ import androidx.annotation.WorkerThread
 import com.example.currentweather.data.remote.Resource
 import com.example.currentweather.data.remote.api.WeatherService
 import com.example.currentweather.data.remote.model.BaseResponse
-import com.example.currentweather.data.remote.model.WeatherForecastResponse
 import com.example.currentweather.data.remote.model.CurrentWeatherResponse
+import com.example.currentweather.data.remote.model.WeatherForecastResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -17,14 +17,15 @@ class WeatherRepository @Inject constructor(private val weatherService: WeatherS
 
     @WorkerThread
     fun getWeather(q: String): Flow<Resource<CurrentWeatherResponse>> = flow {
+        emit(Resource.Loading())
         emit(safeApiCall { weatherService.getWeather(q = q) })
 
     }.flowOn(Dispatchers.IO)
 
     @WorkerThread
-    fun getWeatherForecast(city: String):Flow<Resource<WeatherForecastResponse>> = flow {
-       emit(Resource.Loading())
-        emit(safeApiCall {weatherService.getForecast(q=city)})
+    fun getWeatherForecast(city: String): Flow<Resource<WeatherForecastResponse>> = flow {
+        emit(Resource.Loading())
+        emit(safeApiCall { weatherService.getForecast(q = city) })
     }
 
 
