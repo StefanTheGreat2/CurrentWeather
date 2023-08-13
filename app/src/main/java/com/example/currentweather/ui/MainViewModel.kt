@@ -21,7 +21,10 @@ class MainViewModel @Inject constructor(
     private val weatherForecast = MutableStateFlow<Resource<WeatherForecastResponse>?>(Resource.Loading())
     val weatherForecastResponseState: StateFlow<Resource<WeatherForecastResponse>?> = weatherForecast
 
-
+init{
+    getFiveDaysForecast("london")
+    getCurrentWeather("london")
+}
     fun getCurrentWeather(q:String) {
         viewModelScope.launch {
             weatherRepository.getWeather(q=q).collect{ weather ->

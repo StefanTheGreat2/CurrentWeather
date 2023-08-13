@@ -5,6 +5,8 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -30,14 +32,14 @@ import com.example.currentweather.ui.components.TextSearchBar
 fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
     val isLoaded = rememberSaveable { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) {
-        if (isLoaded.value.not())
-            viewModel.getCurrentWeather("London")
-    }
+//    LaunchedEffect(Unit) {
+//        if (isLoaded.value.not())
+//            viewModel.getCurrentWeather("London")
+//    }
     when (val result = viewModel.currentWeatherState.collectAsState().value) {
         is Resource.Loading -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(text = "LOADING...")
+               CircularProgressIndicator(modifier = Modifier.size(85.dp))
             }
         }
         is Resource.Success -> {
