@@ -22,7 +22,7 @@ class MainViewModel @Inject constructor(
     val weatherForecastResponseState: StateFlow<Resource<WeatherForecastResponse>?> = weatherForecast
 
 init{
-    getFiveDaysForecast("london")
+    getSevenDaysForecast("london")
     getCurrentWeather("london")
 }
     fun getCurrentWeather(q:String) {
@@ -32,7 +32,7 @@ init{
             }
         }
     }
-    fun getFiveDaysForecast(city:String) {
+    fun getSevenDaysForecast(city:String) {
         viewModelScope.launch {
             weatherRepository.getWeatherForecast(city).collect { _weatherForecast ->
                 weatherForecast.value = _weatherForecast

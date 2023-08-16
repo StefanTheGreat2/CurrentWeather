@@ -31,11 +31,6 @@ import com.example.currentweather.ui.components.TextSearchBar
 @Composable
 fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
     val isLoaded = rememberSaveable { mutableStateOf(false) }
-
-//    LaunchedEffect(Unit) {
-//        if (isLoaded.value.not())
-//            viewModel.getCurrentWeather("London")
-//    }
     when (val result = viewModel.currentWeatherState.collectAsState().value) {
         is Resource.Loading -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -120,7 +115,7 @@ fun CurrentWeatherContent(result: Resource.Success<CurrentWeatherResponse>, view
             },
             onSearchActionClick = {
                 viewModel.getCurrentWeather(textValue.value)
-                viewModel.getFiveDaysForecast(textValue.value)
+                viewModel.getSevenDaysForecast(textValue.value)
             })
         Box(modifier = Modifier
             .constrainAs(box) {
