@@ -13,12 +13,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.ImageLoader
 import com.example.currentweather.data.remote.Resource
 import com.example.currentweather.ui.components.DetailGrid
 
 
 @Composable
-fun Forecast(viewModel: MainViewModel = hiltViewModel()) {
+fun Forecast(viewModel: MainViewModel = hiltViewModel(),imageLoader: ImageLoader) {
     val isLoaded = remember {
         mutableStateOf(false)
     }
@@ -39,8 +40,8 @@ fun Forecast(viewModel: MainViewModel = hiltViewModel()) {
                     .verticalScroll(rememberScrollState())
             ) {
                 Column {
-                    HourlyContent(result)
-                    WeaklyContent(result)
+                    HourlyContent(result,imageLoader)
+                    WeaklyContent(result,imageLoader)
                     DetailGrid(result)
                 }
 

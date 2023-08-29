@@ -4,7 +4,6 @@ import com.google.gson.annotations.SerializedName
 
 
 data class Astro (
-
   @SerializedName("sunrise"           ) var sunrise          : String? = null,
   @SerializedName("sunset"            ) var sunset           : String? = null,
   @SerializedName("moonrise"          ) var moonrise         : String? = null,

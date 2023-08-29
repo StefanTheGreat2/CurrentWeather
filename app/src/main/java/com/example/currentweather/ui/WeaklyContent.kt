@@ -13,15 +13,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import coil.ImageLoader
 import com.example.currentweather.data.remote.Resource
 import com.example.currentweather.data.remote.model.WeatherForecastResponse
-import com.example.currentweather.ui.components.network_image.NetworkImage
+import com.example.currentweather.ui.components.networkImage.NetworkImage
 import com.example.currentweather.ui.theme.BlackBackground
 import kotlin.math.roundToInt
 
 @Composable
 fun WeaklyContent(
-    result: Resource.Success<WeatherForecastResponse>
+    result: Resource.Success<WeatherForecastResponse>, imageLoader: ImageLoader
 ) {
     Box() {
         Row(
@@ -33,8 +34,7 @@ fun WeaklyContent(
         ) {
             result.data?.forecast?.forecastday?.forEach() { day ->
                 Box(
-                    Modifier
-                        .padding(5.dp), contentAlignment = Alignment.Center
+                    Modifier.padding(5.dp), contentAlignment = Alignment.Center
                 ) {
                     Box(
                         modifier = Modifier
@@ -62,11 +62,11 @@ fun WeaklyContent(
                             )
                             NetworkImage(
                                 imageUrl = day.day?.condition?.icon!!,
-                                modifier = Modifier.size(100.dp)
+                                modifier = Modifier.size(100.dp),
+                                imageLoader = imageLoader
                             )
                             Text(
-                                text = "${day.day?.mintempC?.roundToInt()}C°",
-                                color = Color.White
+                                text = "${day.day?.mintempC?.roundToInt()}C°", color = Color.White
                             )
                             Text(
                                 text = "Chance of Rain ${day.day?.dailyChanceOfRain}%",

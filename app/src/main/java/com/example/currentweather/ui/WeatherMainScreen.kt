@@ -8,13 +8,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
@@ -23,42 +26,73 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
+import coil.ImageLoader
+import coil.imageLoader
+import coil.util.DebugLogger
 import com.example.currentweather.R
 import com.example.currentweather.data.remote.Resource
 import com.example.currentweather.data.remote.model.CurrentWeatherResponse
+import com.example.currentweather.location.current_location.getCurrentLocation
+import com.example.currentweather.location.permissions.LocationPermissionRequest
 import com.example.currentweather.ui.components.TextSearchBar
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
 
 @Composable
 fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
-    val isLoaded = rememberSaveable { mutableStateOf(false) }
+    val imageLoader =
+        LocalContext.current.imageLoader.newBuilder().logger(DebugLogger()).build()
+    val isLoaded = remember { mutableStateOf(false) }
+    val locationGranted = remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    LocationPermissionRequest(context = context) {
+        if (!locationGranted.value) {
+            viewModel.viewModelScope.launch(Dispatchers.IO) {
+                viewModel.getWeatherByDecimalDegree(getCurrentLocation(context))
+                locationGranted.value = true
+            }
+        }
+    }
+
+
+
+
     when (val result = viewModel.currentWeatherState.collectAsState().value) {
         is Resource.Loading -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-               CircularProgressIndicator(modifier = Modifier.size(85.dp))
+                CircularProgressIndicator(modifier = Modifier.size(85.dp))
             }
         }
         is Resource.Success -> {
             isLoaded.value = true
-            CurrentWeatherContent(result, viewModel)
+            CurrentWeatherContent(result, viewModel, imageLoader)
+
 
         }
         else -> {
 
         }
+
+
     }
-
-
 }
 
+
 @Composable
-fun CurrentWeatherContent(result: Resource.Success<CurrentWeatherResponse>, viewModel: MainViewModel) {
+fun CurrentWeatherContent(
+    result: Resource.Success<CurrentWeatherResponse>,
+    viewModel: MainViewModel,
+    imageLoader: ImageLoader
+) {
     val focusManager = LocalFocusManager.current
     ConstraintLayout(modifier = Modifier.pointerInput(Unit) {
         detectTapGestures(onTap = {
             focusManager.clearFocus(true)
         })
     }) {
-        val (locationName, currentTemp, condition,box, searchBar) = createRefs()
+        val (locationName, currentTemp, condition, forecastBox, searchBar) = createRefs()
         val textValue = remember { mutableStateOf("") }
 
         Image(
@@ -118,23 +152,19 @@ fun CurrentWeatherContent(result: Resource.Success<CurrentWeatherResponse>, view
                 viewModel.getSevenDaysForecast(textValue.value)
             })
         Box(modifier = Modifier
-            .constrainAs(box) {
+            .constrainAs(forecastBox) {
                 top.linkTo(searchBar.bottom, margin = 10.dp)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
                 bottom.linkTo(currentTemp.top, margin = 5.dp)
             }
-           ) {
-            Forecast()
+        ) {
+            Forecast(viewModel, imageLoader)
 
         }
-
 
 
     }
 
 
 }
-
-
-

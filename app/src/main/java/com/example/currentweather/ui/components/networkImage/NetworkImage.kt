@@ -1,19 +1,15 @@
-package com.example.currentweather.ui.components.network_image
-
+package com.example.currentweather.ui.components.networkImage
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
+import coil.ImageLoader
 import coil.compose.AsyncImage
-import coil.imageLoader
-import coil.util.DebugLogger
 
 
 @Composable
-fun NetworkImage(modifier: Modifier, imageUrl: String) {
-    val imageLoader =
-        LocalContext.current.imageLoader.newBuilder().logger(DebugLogger()).build()
+fun NetworkImage(modifier: Modifier, imageUrl: String, imageLoader: ImageLoader) {
+
     AsyncImage(
         model = "http:$imageUrl",
         contentDescription = "",

@@ -7,14 +7,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import coil.ImageLoader
 import com.example.currentweather.data.remote.Resource
 import com.example.currentweather.data.remote.model.WeatherForecastResponse
 import com.example.currentweather.ui.components.WhiteText
-import com.example.currentweather.ui.components.network_image.NetworkImage
+import com.example.currentweather.ui.components.networkImage.NetworkImage
 import com.example.currentweather.util.hour
 
 @Composable
-fun HourlyContent(result: Resource.Success<WeatherForecastResponse>) {
+fun HourlyContent(result: Resource.Success<WeatherForecastResponse>, imageLoader: ImageLoader) {
     Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
         val todayHourly = result.data?.forecast?.forecastday?.get(0)
         todayHourly?.hour?.forEach { hour ->
@@ -30,7 +31,7 @@ fun HourlyContent(result: Resource.Success<WeatherForecastResponse>) {
                     WhiteText(text = hour(hour.time.toString()))
                     NetworkImage(
                         modifier = Modifier.size(25.dp),
-                        imageUrl = hour.condition?.icon.toString()
+                        imageUrl = hour.condition?.icon.toString(),imageLoader
                     )
                     WhiteText(text = "${hour.chanceOfRain.toString()}%")
                     WhiteText(text = hour.condition?.text.toString())
