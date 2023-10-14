@@ -5,7 +5,7 @@ import com.example.currentweather.data.remote.Resource
 import retrofit2.Response
 import java.io.IOException
 
-abstract class BaseResponse (){
+abstract class BaseResponse() {
     suspend fun <T> safeApiCall(
         apiCall: suspend () -> Response<T>
     ): Resource<T> {
@@ -26,5 +26,4 @@ abstract class BaseResponse (){
 
         return Resource.Error("Unknown Error")
     }
-
 }

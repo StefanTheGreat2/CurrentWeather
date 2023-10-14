@@ -3,9 +3,9 @@ package com.example.currentweather.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.currentweather.data.remote.Resource
-import com.example.currentweather.data.remote.model.CurrentWeatherResponse
-import com.example.currentweather.data.remote.model.WeatherForecastResponse
 import com.example.currentweather.data.remote.repository.WeatherRepository
+import com.example.currentweather.usecase.CurrentWeatherUseCase
+import com.example.currentweather.usecase.WeatherForecastUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,36 +18,33 @@ class MainViewModel @Inject constructor(
     private val weatherRepository: WeatherRepository
 ) : ViewModel() {
     private val currentWeather =
-        MutableStateFlow<Resource<CurrentWeatherResponse>?>(Resource.Loading())
-    val currentWeatherState: StateFlow<Resource<CurrentWeatherResponse>?> = currentWeather
+        MutableStateFlow<Resource<CurrentWeatherUseCase>?>(Resource.Loading())
+    val currentWeatherState: StateFlow<Resource<CurrentWeatherUseCase>?> =
+        currentWeather
+
     private val weatherForecast =
-        MutableStateFlow<Resource<WeatherForecastResponse>?>(Resource.Loading())
-    val weatherForecastResponseState: StateFlow<Resource<WeatherForecastResponse>?> =
+        MutableStateFlow<Resource<WeatherForecastUseCase>?>(Resource.Loading())
+    val weatherForecastState: StateFlow<Resource<WeatherForecastUseCase>?> =
         weatherForecast
 
-//    init {
-//        getSevenDaysForecast("london")
-//        getCurrentWeather("london")
-//    }
-
-    fun getCurrentWeather(q: String) {
-        viewModelScope.launch (Dispatchers.IO){
-            weatherRepository.getWeather(q = q).collect { weather ->
+    private fun getCurrentWeather(params: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            weatherRepository.getCurrentWeather(params = params).collect { weather ->
                 currentWeather.value = weather
             }
         }
     }
 
-    fun getSevenDaysForecast(city: String) {
+    private fun getSevenDaysForecast(params: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            weatherRepository.getWeatherForecast(city).collect { _weatherForecast ->
+            weatherRepository.getWeatherForecast(params).collect { _weatherForecast ->
                 weatherForecast.value = _weatherForecast
             }
         }
     }
 
 
-    fun getWeatherByDecimalDegree(locationInfo: String) {
+    fun getWeather(locationInfo: String) {
         getCurrentWeather(locationInfo)
         getSevenDaysForecast(locationInfo)
     }

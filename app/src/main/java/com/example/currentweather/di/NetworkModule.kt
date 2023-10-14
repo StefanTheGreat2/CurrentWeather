@@ -42,7 +42,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideMovieApi(retrofit: Retrofit): WeatherService {
+    fun provideWeatherApi(retrofit: Retrofit): WeatherService {
         return retrofit.create(WeatherService::class.java)
     }
 }

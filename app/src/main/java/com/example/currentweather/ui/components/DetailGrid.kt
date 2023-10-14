@@ -11,20 +11,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.currentweather.data.remote.Resource
-import com.example.currentweather.data.remote.model.WeatherForecastResponse
 import com.example.currentweather.ui.theme.BlackBackground
+import com.example.currentweather.usecase.WeatherForecastUseCase
 import kotlin.math.roundToInt
 
 
 @Composable
 fun DetailGrid(
-    result: Resource<WeatherForecastResponse>
+    weatherForecastData: WeatherForecastUseCase
 ) {
     Column(
         modifier = Modifier
-            .padding(0.dp, 15.dp, 0.dp, 0.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .padding(bottom = 50.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -33,52 +32,54 @@ fun DetailGrid(
             DetailItem(
                 modifier = gridModifier,
                 name = "Feels like:",
-                item = result.data?.current?.feelslikeC!!.toString()
+                item = weatherForecastData.currentUseCase.feelslikeC.toString()
             )
             DetailItem(
                 modifier = gridModifier,
                 name = "Wind Speed:",
-                item = result.data.current?.windKph!!.toString()
+                item = weatherForecastData.currentUseCase.windKph.toString()
             )
             DetailItem(
                 modifier = gridModifier,
                 name = "WindDirection:",
-                item = result.data.current?.windDir!!.toString()
+                item = weatherForecastData.currentUseCase.windDir
             )
         }
 
-        Row {
+        Row() {
             DetailItem(
                 modifier = gridModifier,
                 name = "UV index:",
-                item = result.data?.current?.uv!!.toString()
+                item = weatherForecastData.currentUseCase.uv.toString()
             )
             DetailItem(
                 modifier = gridModifier,
                 name = "Cloud Cover:",
-                item = result.data.current?.cloud!!.toString()
+                item = weatherForecastData.currentUseCase.cloud.toString()
             )
             DetailItem(
                 modifier = gridModifier,
                 name = "Pressure:",
-                item = result.data.current?.pressureMb!!.toString()
+                item = weatherForecastData.currentUseCase.pressureMb.toString()
             )
         }
-        Row {
+        Row(
+//            modifier = Modifier.padding(bottom = 50.dp)
+        ) {
             DetailItem(
                 modifier = gridModifier,
                 name = "Humidity:",
-                item = result.data?.current?.humidity!!.roundToInt().toString()
+                item = weatherForecastData.currentUseCase.humidity.roundToInt().toString()
             )
             DetailItem(
                 modifier = gridModifier,
                 name = "Temp:",
-                item = "${result.data.current?.tempC!!.roundToInt()}C"
+                item = "${weatherForecastData.currentUseCase.tempC.roundToInt()}C"
             )
             DetailItem(
                 modifier = gridModifier,
                 name = "Visibility:",
-                item = result.data.current?.visKm!!.toString()
+                item = weatherForecastData.currentUseCase.visKm.toString()
             )
         }
     }
@@ -96,7 +97,7 @@ fun DetailItem(
             .size(150.dp)
             .padding(8.dp)
             .background(
-                BlackBackground.copy(0.6f), shape = CircleShape.copy(
+                BlackBackground.copy(0.1f), shape = CircleShape.copy(
                     CornerSize(15.dp)
                 )
             ),
