@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,7 +25,7 @@ import kotlin.math.roundToInt
 fun WeaklyContent(
     weatherForecastData: WeatherForecastUseCase, imageLoader: ImageLoader
 ) {
-    Box() {
+    Box {
         Row(
             Modifier
                 .fillMaxWidth()
@@ -32,7 +33,7 @@ fun WeaklyContent(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            weatherForecastData.forecastUseCase.forecastDay.forEach() { day ->
+            weatherForecastData.forecastUseCase.forecastDay.forEach { day ->
                 Box(
                     Modifier.padding(5.dp), contentAlignment = Alignment.Center
                 ) {
@@ -59,7 +60,8 @@ fun WeaklyContent(
                             Text(
                                 text = timeByDayMonth(day.date),
                                 color = Color.White,
-                                modifier = Modifier.padding(10.dp)
+                                modifier = Modifier.padding(10.dp),
+                                fontSize = MaterialTheme.typography.bodySmall.fontSize
                             )
                             NetworkImage(
                                 imageUrl = day.day.condition.icon,
@@ -67,13 +69,20 @@ fun WeaklyContent(
                                 imageLoader = imageLoader
                             )
                             Text(
-                                text = "${day.day.mintempC.roundToInt()}C°", color = Color.White
+                                text = "${day.day.mintempC.roundToInt()}C°",
+                                color = Color.White,
+                                fontSize = MaterialTheme.typography.bodyLarge.fontSize
                             )
                             Text(
                                 text = "Chance of Rain ${day.day.dailyChanceOfRain}%",
-                                color = Color.White
+                                color = Color.White,
+                                fontSize = MaterialTheme.typography.bodyMedium.fontSize
                             )
-                            Text(text = day.day.condition.text, color = Color.White)
+                            Text(
+                                text = day.day.condition.text,
+                                color = Color.White,
+                                fontSize = MaterialTheme.typography.bodyMedium.fontSize
+                            )
 
                         }
                     }

@@ -19,6 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.currentweather.R
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.newSingleThreadContext
 
 
 @Composable
@@ -146,7 +147,9 @@ fun DayToSunsetBackGround(content: @Composable () -> Unit = {}, switchToSunset: 
                             .background(sunBrush)
                             .size(200.dp)
                             .align(Alignment.TopEnd)
-                    )
+                    ){
+                        Image(painter = painterResource(id = R.drawable.sun_background), contentDescription = null, alpha = 0.8f, contentScale = ContentScale.Crop)
+                    }
                 }
                 Box(
                     modifier = Modifier

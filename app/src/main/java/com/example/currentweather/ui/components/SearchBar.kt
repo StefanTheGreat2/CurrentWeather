@@ -42,7 +42,7 @@ fun TextSearchBar(
         shape = CircleShape.copy(CornerSize(30.dp)),
         value = value,
         label = {
-            Text(text = "Search", color = Color.White.copy(0.2f))
+            Text(text = "Search", color = Color.White.copy(0.4f))
         },
         onValueChange = onValueChanged,
         leadingIcon = { Icon(Icons.Filled.Search, null, tint = Color.White.copy(0.2f)) },
@@ -53,10 +53,10 @@ fun TextSearchBar(
                 onSearchActionClick.invoke()
                 keyboardController?.hide()
             }
-        ), colors = TextFieldDefaults.outlinedTextFieldColors(
-            disabledBorderColor = BlackBackground.copy(0.1f),
-            focusedBorderColor = BlackBackground.copy(0.3f),
-            unfocusedBorderColor = BlackBackground.copy(0.1f), focusedTextColor = Color.White
+        ), colors = TextFieldDefaults.colors(
+            disabledContainerColor = BlackBackground.copy(0.1f),
+            focusedContainerColor = BlackBackground.copy(0.2f),
+            unfocusedContainerColor = BlackBackground.copy(0.1f), focusedTextColor = Color.White.copy(0.4f)
         )
     )
 }

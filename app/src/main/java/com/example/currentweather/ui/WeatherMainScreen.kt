@@ -1,6 +1,8 @@
 package com.example.currentweather.ui
 
-import android.util.Log
+
+import android.os.Handler
+import android.os.Looper
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -8,10 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,6 +30,7 @@ import com.example.currentweather.ui.components.TextSearchBar
 import com.example.currentweather.util.currentMillisToHours
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.newSingleThreadContext
 
 
 @Composable
@@ -57,18 +57,22 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
             LoadingContent()
         }
         currentWeather is Resource.Success && weatherForecast is Resource.Success -> {
-            CurrentWeatherContent(
-                imageLoader = imageLoader,
-                currentWeatherData = currentWeather.data,
-                forecastWeatherData = weatherForecast.data, onSearch = { params ->
-                    viewModel.getWeather(params)
-                }, locationRequest = {
-                    viewModel.viewModelScope.launch(Dispatchers.IO) {
-                        viewModel.getWeather(getCurrentLocation(context))
-                    }
-                }
-            )
-        }
+
+
+
+                    MainWeatherContent(
+                        imageLoader = imageLoader,
+                        currentWeatherData = currentWeather.data,
+                        forecastWeatherData = weatherForecast.data, onSearch = { params ->
+                            viewModel.getWeather(params)
+                        }, locationRequest = {
+                            viewModel.viewModelScope.launch(Dispatchers.IO) {
+                                viewModel.getWeather(getCurrentLocation(context))
+                            }
+                        }
+                    )
+                            }
+
         currentWeather is Resource.Error || weatherForecast is Resource.Error -> {
             ErrorContent { viewModel.getWeather(it) }
         }
@@ -117,7 +121,6 @@ private fun ErrorContent(onSearch: (params: String) -> Unit) {
 
 @Composable
 private fun BackgroundImage() {
-    Log.i("TAG", "BackgroundImage: " + currentMillisToHours(System.currentTimeMillis()))
     when (currentMillisToHours(System.currentTimeMillis())) {
 
         in 5..7 -> NightToSunriseBackground(switchToSunrise = true)

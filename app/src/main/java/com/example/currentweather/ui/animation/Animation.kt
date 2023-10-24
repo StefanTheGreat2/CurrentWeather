@@ -2,9 +2,7 @@ package com.example.currentweather.ui.animation
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import com.airbnb.lottie.compose.LottieAnimation
@@ -12,10 +10,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.currentweather.R
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 @Composable
 fun animateColors(isDay: MutableState<Boolean>, sunsetColor: Color, dayColor: Color) =
@@ -34,7 +29,6 @@ fun animate(
 
 @Composable
 fun StarsAnimation() {
-
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.stars))
     LottieAnimation(
         composition = composition,
@@ -48,7 +42,6 @@ fun StarsAnimation() {
 
 @Composable
 fun BirdsAnimation() {
-
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.birds))
     LottieAnimation(
         composition = composition,
@@ -56,10 +49,9 @@ fun BirdsAnimation() {
         contentScale = ContentScale.Crop,
         speed = 0.2f,
     )
-
-
 }
 
+@OptIn(DelicateCoroutinesApi::class)
 fun animateCelestialBody(
     celestialBodyOffsetX: Animatable<Float, AnimationVector1D>,
     targetOffsetX: Float,
@@ -73,9 +65,10 @@ fun animateCelestialBody(
 ) {
     scope.launch(Dispatchers.IO) {
 
+withContext(newSingleThreadContext("")){
 
         launch() {
-            celestialBodyOffsetX.animateTo(targetOffsetX, tween(3000, easing = FastOutSlowInEasing))
+            celestialBodyOffsetX.animateTo(targetOffsetX, tween(3000))
         }
         if (isNight) {
             launch {
@@ -87,7 +80,7 @@ fun animateCelestialBody(
         launch {
             if (isNight) delay(2000)
             celestialBodyOffsetY.animateTo(
-                targetOffsetY, tween(2000, easing = FastOutSlowInEasing)
+                targetOffsetY, tween(2000)
             )
         }
         launch {
@@ -95,4 +88,5 @@ fun animateCelestialBody(
             haloOffset.animateTo(targetHaloOffset, tween(2000))
         }
     }
+}
 }

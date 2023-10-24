@@ -1,5 +1,6 @@
 package com.example.currentweather.ui
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
@@ -24,7 +25,7 @@ import com.example.currentweather.util.timeByDayMonth
 @Composable
 fun HourlyContent(weatherForecastData: WeatherForecastUseCase, imageLoader: ImageLoader) {
     Row(
-        modifier = Modifier.horizontalScroll(rememberScrollState()),
+        modifier = Modifier.horizontalScroll(rememberScrollState()).padding(top=10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         weatherForecastData.forecastUseCase.forecastDay.forEachIndexed { i, day ->
@@ -40,7 +41,9 @@ fun HourlyContent(weatherForecastData: WeatherForecastUseCase, imageLoader: Imag
                     .padding(10.dp)
             ) {
                 day.hour.forEach { hour ->
-                    if (hourFormat(hour.time) >= (currentMillisToHours(System.currentTimeMillis())).toString() && i == 0) {
+                Log.i("TAG", "HourlyContent: ${currentMillisToHours(System.currentTimeMillis())}")
+                Log.i("TAG", "HourlyContent: ${hourFormat(hour.time)}")
+                    if (hourFormat(hour.time).toInt()> (currentMillisToHours(System.currentTimeMillis())) && i == 0) {
                         HourContent(hour, day, imageLoader)
                     } else if (i != 0) {
                         HourContent(hour = hour, day = day, imageLoader = imageLoader)
